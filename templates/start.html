@@ -1,0 +1,98 @@
+{% load static %} 
+<html>
+<head>
+<title>
+</title>
+<link rel="stylesheet" href="/static/jquery-ui.css">
+<script src="/static/jquery-1.12.2.js"></script>
+<script src="/static/jquery-ui.js"></script>
+<link href="/static/roundslider.min.css" rel="stylesheet" />
+<script src="/static/roundslider.min.js"></script>
+<script>
+
+
+
+$( document ).ready(function() {
+    $("#slider").roundSlider({
+   width: 23,
+    radius: 141,
+    value: 1,
+    circleShape: "half-top",
+    handleSize: "+14",
+    sliderType: "min-range",
+    max: "2"
+});
+});
+
+
+ $(function() {
+    $( "#slider-vertical" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 2,
+      value: 60,
+      slide: function( event, ui ) {
+        $( "#amount" ).val( ui.value );
+      }
+    });
+    $( "#amount" ).val( $( "#slider-vertical" ).slider( "value" ) );
+	
+	$.ajax({
+	  url: "/updatemotor/",
+	  type: "POST",
+	  async: false,
+	  dataType: 'json',
+	  data: {csrfmiddlewaretoken: '{{ csrf_token }}',gear:$( "#slider-vertical" ).slider( "value" )},
+	  success: function(data) {
+	  alert(data.result);
+
+
+	  }
+	});	
+	
+	
+  }); 
+  
+ 
+</script>
+<style>
+.ui-slider-vertical {
+height: 18px;
+width: 10px;
+}
+.ui-slider .ui-slider-handle {
+height: 25px;
+width: 15px;
+padding-left: 5px;
+}
+.rs-control .rs-range-color {
+    background-color: #54bbe0;
+}
+.rs-control .rs-path-color {
+    background-color: #54bbe0;
+}
+.rs-control .rs-handle {
+    background-color: #000000;
+}
+.rs-control .rs-bg-color {
+    background-color: #ffffff;
+}
+</style>
+</head>
+<body>
+<p>
+  <label for="amount">Volume:</label>
+  <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+</p>
+<form action="." method="post">
+{% csrf_token %}
+<div style="float:left;width:100%">
+<div style="float:left;width:20%;">
+<div id="slider-vertical" style="height:200px;"></div>
+</div>
+<div id="slider" style="height:200px;float:left;width:80%;"></div>
+</div>
+</form>
+</body>
+</html>
